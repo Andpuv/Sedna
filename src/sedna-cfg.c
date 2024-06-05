@@ -1,25 +1,24 @@
-# include "sedna.h"
 # include <string.h>
-# include <stdio.h>
+# include "sedna.h"
 
 __SEDNA_PRIVATE char * _cfg_read_file (
   __IN    char const * fn
 );
 
 __SEDNA_PRIVATE char * _cfg_dup_tok (
-  __INOUT struct pm_cfg_t * cfg,
-  __IN    char const *      str,
-  __IN    size_t            len
+  __INOUT struct sedna_cfg_t * cfg,
+  __IN    char const *         str,
+  __IN    size_t               len
 );
 
 __SEDNA_PRIVATE char * _cfg_get_tok (
-  __INOUT struct pm_cfg_t * cfg,
-  __INOUT char **           str
+  __INOUT struct sedna_cfg_t * cfg,
+  __INOUT char **              str
 );
 
 __SEDNA_PRIVATE int _cfg_add_tok (
-  __INOUT struct pm_cfg_t * cfg,
-  __IN    char *            str
+  __INOUT struct sedna_cfg_t * cfg,
+  __IN    char *               str
 );
 
 __SEDNA_PUBLIC int sedna_cfg_ctor (
@@ -37,7 +36,7 @@ __SEDNA_PUBLIC int sedna_cfg_ctor (
   char * buf = NULL;
 
   if ( ':' == *str ) {
-    buf = _read_file(str + 1);
+    buf = _cfg_read_file(str + 1);
 
     if ( !buf )
       return SEDNA_FAILURE;
@@ -58,7 +57,7 @@ __SEDNA_PUBLIC int sedna_cfg_ctor (
       continue;
 
     if ( _cfg_add_tok(cfg, tok) ) {
-      fprintf(stderr, "error: cannot add token `%s`\n", tok);
+      fprintf(stderr, "[ ERROR ] Cannot add token `%s`.\n", tok);
       tok = (char *)sedna_dealloc(tok);
       buf = (char *)sedna_dealloc(buf);
       return SEDNA_FAILURE;
@@ -100,7 +99,7 @@ __SEDNA_PUBLIC int sedna_cfg_dtor (
   return SEDNA_SUCCESS;
 }
 
-__SEDNA_PUBLIC char * sedna_cfg_dump (
+__SEDNA_PUBLIC int sedna_cfg_dump (
   __IN    struct sedna_cfg_t * cfg,
   __OUT   FILE *               fp
 )
@@ -162,43 +161,42 @@ __SEDNA_PRIVATE char * _cfg_read_file (
   FILE * fp = fopen(fn, "r") ;
 
   if ( !fp ) {
-    fprintf(stderr, "error: cannot open file `%s`\n", fn);
+    fprintf(stderr, "[ ERROR ] Cannot open file `%s`.\n", fn);
     return NULL;
   }
 
   if ( EOF == fseek(fp, 0, SEEK_END) ) {
-    fprintf(stderr, "error: cannot seek the end of file %s\n", fn);
+    fprintf(stderr, "[ ERROR ] Cannot seek the end of file %s.\n", fn);
     goto _failure;
   }
 
   long len = ftell(fp);
 
   if ( len < 0 ) {
-    fprintf(stderr, "error: cannot compute the length of file %s\n", fn);
+    fprintf(stderr, "[ ERROR ] Cannot compute the length of file %s.\n", fn);
     goto _failure;
   }
 
   if ( EOF == fseek(fp, 0, SEEK_SET) ) {
-    fprintf(stderr, "error: cannot seek the start of file %s\n", fn);
+    fprintf(stderr, "[ ERROR ] Cannot seek the start of file %s.\n", fn);
     goto _failure;
   }
 
   char * buf = (char *)sedna_alloc(( len + 1 ) * sizeof(char));
 
   if ( !buf ) {
-    fprintf(stderr, "error: cannot allocate the buffer for file %s\n", fn);
+    fprintf(stderr, "[ ERROR ] Cannot allocate the buffer for file %s.\n", fn);
     goto _failure;
   }
 
-  if ( len != fread(buf, sizeof(char), len, fp) ) {
-    fprintf(stderr, "error: cannot read the entire file %s\n", fn);
-    free(buf);
+  if ( len != (long)fread(buf, sizeof(char), len, fp) ) {
+    fprintf(stderr, "[ ERROR ] Cannot read the entire file %s.\n", fn);
+    buf = sedna_dealloc(buf);
     goto _failure;
   }
 
   buf[ len ] = 0;
 
-_success:
   fclose(fp);
   return buf;
 
@@ -208,9 +206,9 @@ _failure:
 }
 
 __SEDNA_PRIVATE char * _cfg_dup_tok (
-  __INOUT struct pm_cfg_t * cfg,
-  __IN    char const *      str,
-  __IN    size_t            len
+  __INOUT struct sedna_cfg_t * cfg,
+  __IN    char const *         str,
+  __IN    size_t               len
 )
 {
   size_t cnt = 0;
@@ -248,9 +246,9 @@ __SEDNA_PRIVATE char * _cfg_dup_tok (
 }
 
 __SEDNA_PRIVATE char * _cfg_get_tok (
-  __INOUT struct pm_cfg_t * cfg,
-  __INOUT char **           str
-);
+  __INOUT struct sedna_cfg_t * cfg,
+  __INOUT char **              str
+)
 {
   char * cur = *str;
 
@@ -288,7 +286,7 @@ __SEDNA_PRIVATE char * _cfg_get_tok (
         quote = *cur;
       }
     } else {
-      if ( '\\' == *cur && quote == cur[1] ) {
+      if ( '\\' == *cur && quote == cur[ 1 ] ) {
         ++cur;
       } else if ( quote == *cur ) {
         quote = 0;
@@ -304,7 +302,7 @@ __SEDNA_PRIVATE char * _cfg_get_tok (
     return NULL;
 
   if ( '\'' == *tok || '\"' == *tok ) {
-    if ( *tok == cur[-1] )
+    if ( *tok == cur[ -1 ] )
       return _cfg_dup_tok(cfg, tok + 1, ( (size_t)cur - (size_t)tok ) - 2);
   }
 
@@ -312,9 +310,9 @@ __SEDNA_PRIVATE char * _cfg_get_tok (
 }
 
 __SEDNA_PRIVATE int _cfg_add_tok (
-  __INOUT struct pm_cfg_t * cfg,
-  __IN    char *            str
-);
+  __INOUT struct sedna_cfg_t * cfg,
+  __IN    char *               str
+)
 {
   int     argc = cfg->argc + 1;
   char ** argv = (char **)sedna_realloc(

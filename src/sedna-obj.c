@@ -64,7 +64,7 @@ __SEDNA_PUBLIC int sedna_obj_tracking_open (
   if ( _objc ) {
     fprintf(
       stderr,
-      "[ ERROR ] object tracking already started.\n"
+      "[ ERROR ] Object tracking already started.\n"
     );
 
     return SEDNA_FAILURE;
@@ -80,7 +80,7 @@ __SEDNA_PUBLIC int sedna_obj_tracking_open (
 # ifdef __SEDNA_REQUIRES_VERBOSITY
   fprintf(
     stderr,
-    "[  INFO ] object tracking started.\n"
+    "[  INFO ] Object tracking started.\n"
   );
 # endif
 
@@ -102,6 +102,8 @@ __SEDNA_PUBLIC int sedna_obj_tracking_dump (
     return res;
 
   while ( cur ) {
+    int n;
+
     if ( !cur->next ) {
       n = fprintf(fp, "%p", cur);
     } else {
@@ -115,7 +117,12 @@ __SEDNA_PUBLIC int sedna_obj_tracking_dump (
     cur = cur->next;
   }
 
-  return res;
+  int n = fprintf(fp, "\n");
+
+  if ( n < 0 )
+    return -res;
+
+  return res + n;
 }
 
 __SEDNA_PUBLIC int sedna_obj_tracking_close (
@@ -124,7 +131,7 @@ __SEDNA_PUBLIC int sedna_obj_tracking_close (
 # ifdef __SEDNA_REQUIRES_VERBOSITY
   fprintf(
     stderr,
-    "[  INFO ] object tracking terminated with %d objects.\n",
+    "[  INFO ] Object tracking terminated with %d objects.\n",
     _objc
   );
 # endif
@@ -141,7 +148,7 @@ __SEDNA_PUBLIC int sedna_obj_tracking_close (
 # ifdef __SEDNA_REQUIRES_VERBOSITY
     fprintf(
       stderr,
-      "[  INFO ] object %p detached.\n",
+      "[  INFO ] Object %p detached.\n",
       obj
     );
 # endif
@@ -152,7 +159,7 @@ __SEDNA_PUBLIC int sedna_obj_tracking_close (
     if ( obj ) {
       fprintf(
         stderr,
-        "[ ALERT ] floating object %p (memory leak?).\n",
+        "[ ALERT ] Floating object %p (memory leak?).\n",
         obj
       );
     } else {
@@ -166,8 +173,8 @@ __SEDNA_PUBLIC int sedna_obj_tracking_close (
 # ifdef __SEDNA_REQUIRES_VERBOSITY
   fprintf(
     stderr,
-    "[  INFO ] object tracking deallocated %d of %d objects.\n",
-    cnt, _objc
+    "[  INFO ] Object tracking deallocated %d objects.\n",
+    cnt
   );
 # endif
 
@@ -189,6 +196,8 @@ __SEDNA_PRIVATE void _obj_tracking_attach (
     _objt->next = obj;
     _objt       = obj;
   }
+
+  ++_objc;
 }
 
 __SEDNA_PRIVATE void _obj_tracking_detach (
@@ -205,6 +214,7 @@ __SEDNA_PRIVATE void _obj_tracking_detach (
 
   obj->next = (struct sedna_obj_t *)NULL;
   obj->prev = (struct sedna_obj_t *)NULL;
+  --_objc;
 }
 
 # endif

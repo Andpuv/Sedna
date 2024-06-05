@@ -1,6 +1,15 @@
 # ifndef __SEDNA_H
 #   define __SEDNA_H
 
+#   include <stdint.h>
+#   include <stddef.h>
+#   include <stdlib.h>
+#   include <stdio.h>
+
+#   define __IN
+#   define __OUT
+#   define __INOUT
+
 #   ifndef false
 #     define false ( 0 != 0 )
 #   endif
@@ -8,8 +17,6 @@
 #   ifndef true
 #     define true  ( 0 == 0 )
 #   endif
-
-#   include <stdint.h>
 
 typedef uint8_t  u_byte_t;
 typedef uint16_t u_half_t;
@@ -50,7 +57,7 @@ struct sedna_cfg_t;
 struct sedna_obj_t;
 
 #   include "sedna-ver.h"
-#   include "sedna-com.h"
+#   include "sedna-def.h"
 #   include "sedna-cfg.h"
 #   include "sedna-obj.h"
 

@@ -1,6 +1,46 @@
-# include "sedna.h"
+# include <limits.h>
 # include <string.h>
 # include <errno.h>
+# include "sedna.h"
+
+__SEDNA_PUBLIC void * sedna_alloc (
+  __IN    size_t siz
+)
+{
+  void * ptr = NULL;
+
+  if ( siz ) {
+    ptr = malloc(siz);
+  }
+
+  return ptr;
+}
+
+__SEDNA_PUBLIC void * sedna_realloc (
+  __INOUT void * ptr,
+  __IN    size_t siz
+)
+{
+  if ( siz ) {
+    ptr = realloc(ptr, siz);
+  } else {
+    ptr = sedna_dealloc(ptr);
+  }
+
+  return ptr;
+}
+
+__SEDNA_PUBLIC void * sedna_dealloc (
+  __INOUT void * ptr
+)
+{
+  if ( ptr ) {
+    free(ptr);
+    ptr = NULL;
+  }
+
+  return ptr;
+}
 
 __SEDNA_PUBLIC int sedna_str_to_uint (
   __IN    char const * str,
@@ -91,7 +131,7 @@ __SEDNA_PUBLIC int sedna_str_to_chr (
         rad = 10;
       }
 
-      u_word_t num;
+      u_long_t num;
 
       if ( sedna_str_to_uint(cur, &cur, rad, &num) )
         return -1;
