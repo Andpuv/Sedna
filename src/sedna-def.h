@@ -49,6 +49,13 @@ __SEDNA_PUBLIC int sedna_str_to_sint (
   __IN    s_long_t *   num
 );
 
+__SEDNA_PUBLIC int sedna_str_to_size (
+  __IN    char const * str,
+  __OUT   char **      endptr,
+  __IN    int          rad,
+  __IN    u_long_t *   num
+);
+
 __SEDNA_PUBLIC int sedna_str_to_chr (
   __IN    char const * str,
   __OUT   char **      endptr

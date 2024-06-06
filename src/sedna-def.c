@@ -90,6 +90,70 @@ __SEDNA_PUBLIC int sedna_str_to_sint (
   return 0;
 }
 
+__SEDNA_PUBLIC int sedna_str_to_size (
+  __IN    char const * str,
+  __OUT   char **      endptr,
+  __IN    int          rad,
+  __IN    u_long_t *   num
+)
+{
+  u_long_t tmp_num    = U_LONG(0);
+  char *   tmp_endptr = (char *)NULL;
+
+  int res = sedna_str_to_uint(str, &tmp_endptr, rad, &tmp_num);
+
+  if ( res )
+    return res;
+
+  if ( 0 == strcmp(tmp_endptr, "Ki") ) {
+    tmp_endptr += 2;
+    tmp_num   <<= 10;
+  } else if ( 0 == strcmp(tmp_endptr, "Mi") ) {
+    tmp_endptr += 2;
+    tmp_num   <<= 20;
+  } else if ( 0 == strcmp(tmp_endptr, "Gi") ) {
+    tmp_endptr += 2;
+    tmp_num   <<= 30;
+  } else if ( 0 == strcmp(tmp_endptr, "Ti") ) {
+    tmp_endptr += 2;
+    tmp_num   <<= 40;
+  } else if ( 0 == strcmp(tmp_endptr, "Pi") ) {
+    tmp_endptr += 2;
+    tmp_num   <<= 50;
+  } else if ( 0 == strcmp(tmp_endptr, "Ei") ) {
+    tmp_endptr += 2;
+    tmp_num   <<= 60;
+  } else if ( 0 == strcmp(tmp_endptr, "K") ) {
+    tmp_endptr += 1;
+    tmp_num    *= U_LONG(1000);
+  } else if ( 0 == strcmp(tmp_endptr, "M") ) {
+    tmp_endptr += 1;
+    tmp_num    *= U_LONG(1000000);
+  } else if ( 0 == strcmp(tmp_endptr, "G") ) {
+    tmp_endptr += 1;
+    tmp_num    *= U_LONG(10000000000);
+  } else if ( 0 == strcmp(tmp_endptr, "T") ) {
+    tmp_endptr += 1;
+    tmp_num    *= U_LONG(10000000000000);
+  } else if ( 0 == strcmp(tmp_endptr, "P") ) {
+    tmp_endptr += 1;
+    tmp_num    *= U_LONG(10000000000000000);
+  } else if ( 0 == strcmp(tmp_endptr, "E") ) {
+    tmp_endptr += 1;
+    tmp_num    *= U_LONG(10000000000000000000);
+  }
+
+  if ( num ) {
+    *num = tmp_num;
+  }
+
+  if ( endptr ) {
+    *endptr = tmp_endptr;
+  }
+
+  return 0;
+}
+
 __SEDNA_PUBLIC int sedna_str_to_chr (
   __IN    char const * str,
   __OUT   char **      endptr
