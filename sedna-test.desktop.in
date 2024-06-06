@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=@version@
+Name=@name@
+Comment=Sedna Application
+Exec=@exec@
+Icon=@icon@
+Terminal=true
+Type=Application
+Categories=Utility;

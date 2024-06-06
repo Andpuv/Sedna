@@ -50,3 +50,27 @@ sedna_exe = executable('sedna-test', 'src/main.c',
   install_dir         : binary_dir,
   install_rpath       : library_dir
 )
+
+icon = 'sedna.png'
+
+install_data(icon,
+  install_dir : binary_dir
+)
+
+desktop_entry = configure_file(
+  input  : 'sedna-test.desktop.in',
+  output : 'sedna-test.desktop',
+  configuration : {
+    'version' : '0.0.0',
+    'name'    : 'Sedna',
+    'exec'    : join_paths(binary_dir, 'sedna-test'),
+    'icon'    : join_paths(binary_dir, 'sedna.png')
+  }
+)
+
+install_data(desktop_entry,
+  install_dir : binary_dir
+)
+
+# cd ${bin_dir}/sedna
+# chmod u+x sedna-test.desktop

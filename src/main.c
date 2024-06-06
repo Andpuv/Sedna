@@ -28,5 +28,7 @@ int main ( int argc, char ** argv )
     sedna_obj_tracking_close();
   }
 
+  for (;;);
+
   return EXIT_SUCCESS;
 }
