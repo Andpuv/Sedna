@@ -53,6 +53,13 @@ typedef  int64_t s_long_t;
 #   define S_WORD_MAX INT32_MAX
 #   define S_LONG_MAX INT64_MAX
 
+#   define Ki(n) ( ((u_long_t)n) << 10 )
+#   define Mi(n) ( ((u_long_t)n) << 20 )
+#   define Gi(n) ( ((u_long_t)n) << 30 )
+#   define Ti(n) ( ((u_long_t)n) << 40 )
+#   define Pi(n) ( ((u_long_t)n) << 50 )
+#   define Ei(n) ( ((u_long_t)n) << 60 )
+
 struct sedna_cfg_t;
 struct sedna_obj_t;
 
