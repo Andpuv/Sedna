@@ -67,6 +67,7 @@ struct sedna_obj_t;
 #   include "sedna-def.h"
 #   include "sedna-cfg.h"
 #   include "sedna-obj.h"
+#   include "sedna-ram.h"
 
 #   define __SEDNA__ __SEDNA_VERSION
 

@@ -212,6 +212,14 @@ __SEDNA_PRIVATE void _obj_tracking_detach (
     obj->next->prev = obj->prev;
   }
 
+  if ( obj == _objh ) {
+    _objh = obj->next;
+  }
+
+  if ( obj == _objt ) {
+    _objt = obj->prev;
+  }
+
   obj->next = (struct sedna_obj_t *)NULL;
   obj->prev = (struct sedna_obj_t *)NULL;
   --_objc;

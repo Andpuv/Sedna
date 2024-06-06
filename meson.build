@@ -8,6 +8,7 @@ sources = [
   'src/sedna-linux.c',
   'src/sedna-cfg.c',
   'src/sedna-obj.c',
+  'src/sedna-ram.c',
   'src/sedna.c'
 ]
 
@@ -17,6 +18,7 @@ headers = [
   'src/sedna-linux.h',
   'src/sedna-cfg.h',
   'src/sedna-obj.h',
+  'src/sedna-ram.h',
   'src/sedna.h'
 ]
 

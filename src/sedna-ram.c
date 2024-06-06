@@ -4,7 +4,7 @@
 # include "sedna.h"
 
 # define _ram_dtor()                            \
-    ram = (struct sedna_obj_t *)sedna_obj_dtor( \
+    ram = (struct sedna_ram_t *)sedna_obj_dtor( \
       (struct sedna_obj_t *)ram                 \
     )
 
@@ -13,7 +13,7 @@ __SEDNA_PUBLIC struct sedna_ram_t * sedna_ram_ctor (
   __IN    struct sedna_cfg_t * cfg
 )
 {
-  ram = (struct sedna_obj_t *)sedna_obj_ctor(
+  ram = (struct sedna_ram_t *)sedna_obj_ctor(
     (struct sedna_obj_t *)ram, sizeof(struct sedna_ram_t)
   );
 
@@ -36,7 +36,8 @@ __SEDNA_PUBLIC struct sedna_ram_t * sedna_ram_ctor (
         fprintf(
           stderr,
           "[ ERROR ] Cannot configure the RAM length:\n"
-          "          missing configuration parameter `%s LENGTH`.\n"
+          "          missing configuration parameter `%s LENGTH`.\n",
+          args
         );
 
         _ram_dtor();
